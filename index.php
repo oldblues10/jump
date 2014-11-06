@@ -22,6 +22,12 @@
     $mapUrl                    = GoogleApiHelper::getMapByLatitudeAndLongitude($currentAirportData['latitude'], $currentAirportData['longitude']);
     $streetViewUrl             = GoogleApiHelper::getStreetViewByLatitudeAndLongitude($currentAirportData['latitude'], $currentAirportData['longitude']);
 
+
+    //$searchTerm    =  urlencode($currentAirportData['city'] . ' ' .  $currentAirportData['countryName']);
+    //$pixabayHelper = new PixabayHelper($config['pixabay']['username'], $config['pixabay']['key']);
+    //$pixabayImageUrl =$pixabayHelper->getImageUrl($searchTerm);
+    // echo "<img src='" . $pixabayImageUrl . "'>";
+
     echo "<html>";
     echo "<img src='" . $mapUrl . "'>";
     echo "<img src='" . $streetViewUrl . "'>";
