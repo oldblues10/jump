@@ -34,7 +34,16 @@
                     "requestedFields=airlineLogoUrlPng%2CdestinationAirportCode%2CoriginCountryCode%2C" .
                     "destinationCountryCode%2CairlineName%2CairlineCode%2Cterminal%2CflightNumber%2Ccity%2CcurrentTime%2Cgate%2Cremarks&" .
                     "lateMinutes=15&useRunwayTimes=false&excludeCargoOnlyFlights=true&sortFields=currentTime";
-            return CurlHelper::execute($url);$handle = curl_init();
+            return CurlHelper::execute($url);
+        }
+
+
+        public function getScheduledFlightsByAirportCodeAndDateAndTime($code, $year, $month, $day, $hour)
+        {
+            $dateTimeString = $year . '/' . $month . '/' . $day . '/' . $hour;
+            $url  = static::FLEX_API_BASE_URL . "schedules/rest/v1/json/from/" . $code .
+                    "/departing/" . $dateTimeString . "?appId=" . $this->appId . "&appKey=" . $this->appKey;
+            return CurlHelper::execute($url);
         }
     }
 ?>

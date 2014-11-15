@@ -9,24 +9,53 @@
     if(isset($_GET['currentAirportCode']))
     {
         $currentAirportCode = $_GET['currentAirportCode'];
+        $atHome             = false;
     }
     else
     {
         $currentAirportCode = 'ORD';
+        $atHome             = true;
     }
+    if(isset($_GET['jump']))
+    {
+        $jumped = (bool)$_GET['jump'];
+    }
+    else
+    {
+        $jumped = false;
+    }
+
     $flightStatsHelper         = new FlightStatsHelper($config['flightStats']['appId'], $config['flightStats']['appKey']);
     $currentAirportData        = $flightStatsHelper->getAirportDataByCode($currentAirportCode);
     $currentAirportWeatherData = OpenWeatherMapHelper::getWeatherByLatitudeAndLongitude($currentAirportData['latitude'], $currentAirportData['longitude']);
-    $airportFidsData           = $flightStatsHelper->getFidsByAirportCode($currentAirportCode);
     $weatherConditionIconUrl   = OpenWeatherMapHelper::getConditionImageUrlByIcon($currentAirportWeatherData['weather'][0]['icon']);
     $mapUrl                    = GoogleApiHelper::getMapByLatitudeAndLongitude($currentAirportData['latitude'], $currentAirportData['longitude']);
     $streetViewUrl             = GoogleApiHelper::getStreetViewByLatitudeAndLongitude($currentAirportData['latitude'], $currentAirportData['longitude']);
 
 
-    //$searchTerm    =  urlencode($currentAirportData['city'] . ' ' .  $currentAirportData['countryName']);
+    if(isset($_GET['localArrivalTimeStamp']))
+    {
+        $localTimeStamp = $_GET['localArrivalTimeStamp'];
+    }
+    else
+    {
+        $localTimeStamp = strtotime($currentAirportData['localTime']);
+    }
+
+
+
+//todo: resolve and filter scheduledFlights by codeShare = false
+
+
+//$searchTerm    =  urlencode($currentAirportData['city'] . ' ' .  $currentAirportData['countryName']);
     //$pixabayHelper = new PixabayHelper($config['pixabay']['username'], $config['pixabay']['key']);
     //$pixabayImageUrl =$pixabayHelper->getImageUrl($searchTerm);
     // echo "<img src='" . $pixabayImageUrl . "'>";
+
+
+
+
+
 
     echo "<html>";
     echo "<img src='" . $mapUrl . "'>";
@@ -37,54 +66,34 @@
     echo "max temp: " . MiscUtil::convertKelvinToFarenheit($currentAirportWeatherData['main']['temp_min']) . "<BR>";
     echo "min temp: " . MiscUtil::convertKelvinToFarenheit($currentAirportWeatherData['main']['temp_max']) . "<BR>";
 
-    if(isset($airportFidsData['fidsData']))
-    {
-        echo "<h1>" . $currentAirportData['city'] . ' - ' . $currentAirportData['countryName'] . " - " . $currentAirportData['fs'] . "</h1>";
-        echo "<table border=1>";
-        echo "<tr>";
-        echo "<td></td>";
-        echo "<td>Airline Name</td>";
-        echo "<td>Airline Code</td>";
-        echo "<td>Flight Number</td>";
-        echo "<td>Remarks</td>";
-        echo "<td>City/Airport</td>";
-        echo "<td>Country Code</td>";
-        echo "<td>Terminal/Gate</td>";
-        echo "<td>CurrentTime</td>";
-        echo "</tr>";
-        foreach ($airportFidsData['fidsData'] as $flightData)
+
+//todo: fids data should help overlay scheduled data, that is all really.. with terminal/gate and remarks
+/**
+        if($jumped || $atHome)
         {
-            if($flightData['destinationCountryCode'] == 'US' && $flightData['originCountryCode'] == 'US')
-            {
-                continue;
-            }
-            $flagImageUrl = GeoNamesHelper::getFlagImageUrlByCountryCode($flightData['destinationCountryCode']);
-            echo "<tr>";
-            echo "<td><img src='" . $flightData['airlineLogoUrlPng'] . "' height=50 width=150></td>";
-            echo "<td>" . $flightData['airlineName'] . "</td>";
-            echo "<td>" . $flightData['airlineCode'] . "</td>";
-            echo "<td>" . $flightData['flightNumber'] . "</td>";
-            echo "<td>" . $flightData['remarks'] . "</td>";
-            echo "<td>" . $flightData['city'] . " - <a href='?currentAirportCode=" . $flightData['destinationAirportCode'] . "'>" .
-                          $flightData['destinationAirportCode']. "</a></td>";
-            echo "<td>" . $flightData['destinationCountryCode'] .
-                          " <img src='" . $flagImageUrl.  "'/></td>";
-            if(isset($flightData['terminal']) && isset($flightData['gate']))
-            {
-                echo "<td>T-" . $flightData['terminal'] . "<BR/>" . $flightData['gate'] . "</td>";
-            }
-            elseif(isset($flightData['terminal']))
-            {
-                echo "<td>T-" . $flightData['terminal'] . "<BR/>-</td>";
-            }
-            else
-            {
-                echo "<td>N/A</td>";
-            }
-            echo "<td>" . $flightData['currentTime'] . "</td>";
-            echo "</tr>";
+            $airportFidsData = $flightStatsHelper->getFidsByAirportCode($currentAirportCode);
+            // echo "<pre>";
+            // print_r($airportFidsData);
+            // echo "</pre>";
+            ViewUtil::renderFidsView($currentAirportData, $localTimeStamp, $airportFidsData);
         }
-        echo "</table>";
-    }
+        else
+        {
+**/
+            echo date("F j, Y, g:i a", $localTimeStamp);
+            $airportScheduledData = $flightStatsHelper->getScheduledFlightsByAirportCodeAndDateAndTime(
+                $currentAirportCode,
+                date('Y', $localTimeStamp),
+                date('n', $localTimeStamp),
+                date('j', $localTimeStamp),
+                date('G', $localTimeStamp));
+       //   echo "<pre>";
+         // print_r($airportScheduledData);
+        //  echo "</pre>";
+        //   exit;
+            //todo; i think time would be wrong. watch out on fly to
+            ViewUtil::renderScheduledView($currentAirportData, $localTimeStamp, $airportScheduledData);
+      //  }
+
     echo "</body></html>"
 ?>

@@ -6,12 +6,15 @@
      */
     require_once('config.php');
     require_once('library/MiscUtil.php');
+    require_once('library/ViewUtil.php');
     require_once('library/CurlHelper.php');
     require_once('library/GeoNamesHelper.php');
     require_once('library/GoogleApiHelper.php');
     require_once('library/PixabayHelper.php');
     require_once('library/OpenWeatherMapHelper.php');
     require_once('library/FlightStatsHelper.php');
+    require_once('library/FidsToFlightDataAdapter.php');
+    require_once('library/ScheduledToFlightDataAdapter.php');
     //todo: gracefully handle if config.php is not present..
 
     $defaultConfig = array(
