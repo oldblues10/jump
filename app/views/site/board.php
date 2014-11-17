@@ -1,7 +1,7 @@
 <?php
 use yii\helpers\Html;
-use vendor\jump\MiscUtil;
-use vendor\jump\ViewUtil;
+use app\core\utils\MiscUtil;
+use app\core\utils\ViewUtil;
 ?>
 <div class="site-board">
     <img src='<?= $mapUrl ?>'>

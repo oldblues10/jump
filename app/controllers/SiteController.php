@@ -8,9 +8,9 @@ use yii\web\Controller;
 use yii\filters\VerbFilter;
 use app\models\LoginForm;
 use app\models\ContactForm;
-use vendor\jump\FlightStatsHelper;
-use vendor\jump\OpenWeatherMapHelper;
-use vendor\jump\GoogleApiHelper;
+use app\core\utils\FlightStatsHelper;
+use app\core\utils\OpenWeatherMapHelper;
+use app\core\utils\GoogleApiHelper;
 
 class SiteController extends Controller
 {
