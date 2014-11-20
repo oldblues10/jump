@@ -8,3 +8,4 @@
 .idea/workspace.xml
 config.php
 app/config/siteParams.php
+app/config/siteDb.php
