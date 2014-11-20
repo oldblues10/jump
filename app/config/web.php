@@ -2,6 +2,11 @@
 
 $params     = require(__DIR__ . '/params.php');
 $siteParams = require(__DIR__ . '/siteParams.php');
+$dbParams   = require(__DIR__ . '/db.php');
+if(file_exists(__DIR__ . '/siteDb.php'))
+{
+    $dbParams = array_merge($dbParams, require(__DIR__ . '/siteDb.php'));
+}
 $config = [
     'id' => 'basic',
     'basePath' => dirname(__DIR__),
@@ -37,7 +42,7 @@ $config = [
                 ],
             ],
         ],
-        'db' => require(__DIR__ . '/db.php'),
+        'db' => $dbParams,
     ],
     'params' => array_merge($params, $siteParams),
 ];
