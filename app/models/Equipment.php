@@ -11,6 +11,7 @@ use Yii;
  * @property string $IATACode
  * @property string $ICAOCode
  * @property string $representativeName
+ * @property string $type
  */
 class Equipment extends \yii\db\ActiveRecord
 {
@@ -30,7 +31,8 @@ class Equipment extends \yii\db\ActiveRecord
         return [
             [['name'], 'string', 'max' => 64],
             [['IATACode', 'ICAOCode'], 'string', 'max' => 8],
-            [['representativeName'], 'string', 'max' => 34]
+            [['representativeName'], 'string', 'max' => 36],
+            [['type'], 'string', 'max' => 1]
         ];
     }
 
@@ -44,6 +46,7 @@ class Equipment extends \yii\db\ActiveRecord
             'IATACode' => Yii::t('app', 'Iatacode'),
             'ICAOCode' => Yii::t('app', 'Icaocode'),
             'representativeName' => Yii::t('app', 'Representative Name'),
+            'type' => Yii::t('app', 'Type'),
         ];
     }
 }
